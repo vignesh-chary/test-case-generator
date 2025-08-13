@@ -1,0 +1,15 @@
+/* src/components/SummaryGeneration.css */
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary-prompt-box {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.summary-output-container {
+  min-height: 200px;
+}

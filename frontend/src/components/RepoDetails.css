@@ -1,0 +1,28 @@
+/* src/components/RepoDetails.css */
+.repo-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.file-tree-container {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.file-tree-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.file-tree-item.selected {
+  background-color: #eaf0f4;
+  border-radius: 4px;
+}
+
+.file-tree-item:hover {
+  background-color: #f6f8fa;
+  border-radius: 4px;
+}
