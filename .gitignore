@@ -1,5 +1,4 @@
-
- # ------------------------------
+# ------------------------------
 # Global ignores
 # ------------------------------
 
@@ -48,3 +47,15 @@ frontend/dist/
 frontend/dist-ssr/
 frontend/*.local
 frontend/.env
+
+# ------------------------------
+# Backend specific
+# ------------------------------
+
+# Python virtual environment
+backend/venv/
+
+# Compiled Python files
+# Ignores all __pycache__ folders and compiled files
+*.py[cod]
+backend/app/__pycache__/
