@@ -48,7 +48,6 @@ export function SummaryGeneration() {
         {
           summary: summary.description,
           framework: summary.framework,
-          file: summary.title, // Add the file name to the request payload
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -91,8 +90,9 @@ export function SummaryGeneration() {
       <p className="text-gray-600 mb-4">Repository: {repository.full_name}</p>
       <div className="bg-white p-6 rounded-lg shadow-lg">
         <ul className="space-y-4">
-          {summaries.map((summary) => (
-            <li key={summary.title} className="border-b pb-4 last:border-b-0 last:pb-0">
+          {summaries.map((summary, index) => (
+            // ✅ FIX: Changed the key to use the unique index of the array item.
+            <li key={index} className="border-b pb-4 last:border-b-0 last:pb-0">
               <h2 className="text-xl font-semibold text-gray-700">{summary.title}</h2>
               <p className="text-gray-500 mt-1">{summary.description}</p>
               <div className="mt-4">

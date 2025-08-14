@@ -13,7 +13,8 @@ import "./RepoDetails.css";
 export function RepoDetails() {
   const [fileTree, setFileTree] = useState<FileNode[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pathHistory, setPathHistory] = useState<string[]>(['']);
+  // pathHistory now stores the full path of the current directory, not a history of steps
+  const [currentPath, setCurrentPath] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<FileNode[]>([]);
   const [generatingTests, setGeneratingTests] = useState(false); // New state for test generation loading
 
@@ -27,9 +28,9 @@ export function RepoDetails() {
 
   useEffect(() => {
     if (accessToken && owner && repoName) {
-      fetchRepositoryFiles(owner, repoName, pathHistory[pathHistory.length - 1]);
+      fetchRepositoryFiles(owner, repoName, currentPath);
     }
-  }, [accessToken, owner, repoName, pathHistory]);
+  }, [accessToken, owner, repoName, currentPath]);
 
   const fetchRepositoryFiles = async (repoOwner: string, repoName: string, path: string) => {
     setLoading(true);
@@ -40,6 +41,7 @@ export function RepoDetails() {
           params: { token: accessToken },
         }
       );
+      // The API returns 'dir' for folders, not 'tree'
       setFileTree(res.data.filter((item: any) => item.type === "file" || item.type === "dir"));
       setError(null);
     } catch (err: any) {
@@ -69,16 +71,22 @@ export function RepoDetails() {
   };
 
   const onNavigate = (item: FileNode) => {
-    if (item.type === "tree") {
-      const newPath = pathHistory[pathHistory.length - 1] === '' ? item.path : `${pathHistory[pathHistory.length - 1]}/${item.path}`;
-      setPathHistory(prev => [...prev, newPath]);
-      setFileTree([]);
+    // Corrected logic: Set the current path to the full path of the selected directory.
+    if (item.type === "dir") {
+      setCurrentPath(item.path);
+      setFileTree([]); // Clear tree to show loading state
     }
   };
 
   const onGoBack = () => {
-    if (pathHistory.length > 1) {
-      setPathHistory(prev => prev.slice(0, prev.length - 1));
+    // Navigate back by getting the parent directory from the current path
+    const pathParts = currentPath.split('/');
+    if (pathParts.length > 1) {
+      pathParts.pop(); // Remove the last part
+      setCurrentPath(pathParts.join('/'));
+      setFileTree([]); // Clear tree to show loading state
+    } else {
+      setCurrentPath('');
       setFileTree([]);
     }
   };
@@ -141,15 +149,18 @@ export function RepoDetails() {
     }
   };
 
+  const pathSegments = currentPath.split('/').filter(Boolean);
+
   return (
     <div className="repo-details-container">
       <h1 className="text-3xl font-bold mb-4">{repository?.full_name || "Repository"}</h1>
       <div className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
         <span>Path:</span>
-        {pathHistory.map((p, index) => (
-          <span key={index}>
-            {index > 0 && <span>/</span>}
-            <span className="text-blue-600 font-medium">{p.split('/').filter(Boolean).pop() || "root"}</span>
+        <span className="text-blue-600 font-medium">root</span>
+        {pathSegments.map((p, index) => (
+          <span key={index} className="flex items-center">
+            <span className="mx-1">/</span>
+            <span className="text-blue-600 font-medium">{p}</span>
           </span>
         ))}
       </div>
@@ -161,7 +172,7 @@ export function RepoDetails() {
           </div>
         ) : (
           <ul className="p-4">
-            {pathHistory.length > 1 && (
+            {currentPath !== '' && (
               <li onClick={onGoBack} className="file-tree-item text-blue-600 font-medium">
                 <ArrowUp className="w-5 h-5 mr-2" />
                 <span>...</span>
@@ -170,10 +181,10 @@ export function RepoDetails() {
             {fileTree.map(item => (
               <li
                 key={item.path}
-                onClick={() => item.type === 'tree' ? onNavigate(item) : onFileSelect(item)}
+                onClick={() => item.type === 'dir' ? onNavigate(item) : onFileSelect(item)}
                 className={`file-tree-item ${isFileSelected(item) ? 'selected' : ''}`}
               >
-                {item.type === 'tree' ? (
+                {item.type === 'dir' ? (
                   <FolderOpen className="w-5 h-5 mr-2 text-gray-500" />
                 ) : (
                   <FileText className="w-5 h-5 mr-2 text-gray-500" />

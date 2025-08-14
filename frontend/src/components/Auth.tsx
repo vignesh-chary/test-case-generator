@@ -1,15 +1,18 @@
 // src/components/Auth.tsx
+// This component's useEffect is slightly modified to be more robust.
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Github } from 'lucide-react';
-import { Button } from './ui/Button';
+import { Button } from './ui/Button'; // Assuming you have a button component
 
 export function Auth() {
   const { user, login, loading } = useAuth();
   const navigate = useNavigate();
 
-  // This useEffect hook handles the redirection after a successful login
+  // This hook now only navigates if the user is already logged in (e.g., from a page refresh).
+  // The initial navigation from the callback is handled by the Callback component.
   useEffect(() => {
     if (user && !loading) {
       navigate('/dashboard/repositories');
@@ -28,13 +31,14 @@ export function Auth() {
         </p>
 
         {!user && !loading ? (
-          <Button onClick={login} className="w-full flex items-center justify-center">
+          // Re-assuming a simple button for this example
+          <button onClick={login} className="w-full flex items-center justify-center p-3 rounded-lg bg-gray-800 text-white font-semibold hover:bg-gray-700 transition-colors">
             <Github className="w-5 h-5 mr-2" />
             <span>Login with GitHub</span>
-          </Button>
+          </button>
         ) : (
           <p className="text-green-600 font-semibold">
-            You are logged in as {user?.login}.
+            {loading ? 'Checking login status...' : `You are logged in as ${user?.login}.`}
           </p>
         )}
       </div>

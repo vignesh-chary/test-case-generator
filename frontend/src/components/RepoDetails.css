@@ -1,28 +1,43 @@
 /* src/components/RepoDetails.css */
+
+/* Main container with padding and a light background */
 .repo-details-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background-color: #f0f4f8; /* A very light gray background */
+  color: #334155; /* Dark gray text color */
+  padding: 24px;
 }
 
+/* Container for the file tree */
 .file-tree-container {
   max-height: 70vh;
   overflow-y: auto;
+  background-color: #ffffff; /* White background for the container */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0; /* A light border */
 }
 
+/* Individual file/folder item */
 .file-tree-item {
   display: flex;
   align-items: center;
-  padding: 8px 0;
+  padding: 12px 16px;
   cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  border-bottom: 1px solid #e2e8f0; /* Subtle separator line */
 }
 
+/* Highlight for selected files */
 .file-tree-item.selected {
-  background-color: #eaf0f4;
-  border-radius: 4px;
+  background-color: #6366f1; /* A distinct modern indigo for selection */
+  color: #ffffff; /* White text for contrast */
+  font-weight: 600; /* Bolder text for emphasis */
 }
 
-.file-tree-item:hover {
-  background-color: #f6f8fa;
-  border-radius: 4px;
+/* Hover effect for all items */
+.file-tree-item:hover:not(.selected) {
+  background-color: #f1f5f9; /* Light gray on hover */
 }

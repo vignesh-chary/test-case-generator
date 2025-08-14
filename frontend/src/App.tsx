@@ -9,6 +9,7 @@ import { Repositories } from './components/Repositories';
 import { RepoDetails } from './components/RepoDetails';
 import { SummaryGeneration } from './components/SummaryGeneration';
 import { TestGeneration } from './components/TestGeneration';
+import { Callback } from './pages/Callback';
 
 // A simple dashboard component that provides the main layout for authenticated users
 function DashboardLayout() {
@@ -39,7 +40,8 @@ export default function App() {
           <Routes>
             {/* Public route for the login page */}
             <Route path="/" element={<Auth />} />
-
+            {/* ✅ IMPORTANT: The route for the GitHub callback must be defined here. */}
+            <Route path="/callback" element={<Callback />} />
             {/* A nested route structure for the authenticated part of the application */}
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Repositories />} /> {/* Default route for /dashboard */}
